@@ -1,0 +1,37 @@
+package future
+
+import (
+	"sync"
+)
+
+type Future[T any] struct {
+	wg     sync.WaitGroup
+	Result T
+	Err    error
+	IsDone bool
+}
+
+func Run[T any](f func() (T, error)) *Future[T] {
+	future := &Future[T]{}
+	future.wg.Add(1)
+	go func() {
+		future.Result, future.Err = f()
+		future.wg.Done()
+		future.IsDone = true
+	}()
+	return future
+}
+
+func (f *Future[T]) Wait() {
+	f.wg.Wait()
+}
+
+func (f *Future[T]) Get() (T, error) {
+	f.Wait()
+	return f.Result, f.Err
+}
+
+func (f *Future[T]) GetResult() T {
+	f.Wait()
+	return f.Result
+}
