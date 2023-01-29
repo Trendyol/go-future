@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go-future/future"
+	"github.com/hamzagoc/go-future/future"
 	"log"
 )
 

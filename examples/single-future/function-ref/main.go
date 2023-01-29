@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go-future/future"
+	"github.com/hamzagoc/go-future/future"
 	"time"
 )
 
