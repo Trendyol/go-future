@@ -2,8 +2,8 @@ package future_test
 
 import (
 	"errors"
-	"github.com/hamzagoc/go-future/future"
-	"github.com/hamzagoc/go-future/test/assert"
+	"github.com/Trendyol/go-future/future"
+	"github.com/Trendyol/go-future/test/assert"
 	"math/rand"
 	"testing"
 	"time"

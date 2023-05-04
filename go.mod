@@ -1,3 +1,3 @@
-module github.com/hamzagoc/go-future
+module github.com/Trendyol/go-future
 
 go 1.18

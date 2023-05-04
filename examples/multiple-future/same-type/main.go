@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/hamzagoc/go-future/future"
+	"github.com/Trendyol/go-future/future"
 	"log"
 	"math/rand"
 	"time"
