@@ -79,6 +79,75 @@ func Test_Future_Returns_Error(t *testing.T) {
 	assert.Nil(t, result)
 }
 
+func Test_Future_RunWithParam_Returns_Value(t *testing.T) {
+	// Given
+	fn := func(myParam string) (string, error) {
+		return "future-test-" + myParam, nil
+	}
+
+	// When
+	f := future.RunWithParam[string, string](fn, "withParam")
+	result, err := f.Get()
+
+	// Then
+	assert.Nil(t, err)
+	assert.Equal(t, "future-test-withParam", result)
+}
+
+func Test_Future_RunWithParam_Returns_Pointer_Ref(t *testing.T) {
+	// Given
+	expectedVal := "param-is-null"
+	fn := func(myParam *int) (*string, error) {
+		if myParam == nil {
+			return &expectedVal, nil
+		}
+		return nil, nil
+	}
+
+	// When
+	f := future.RunWithParam[*string, *int](fn, nil)
+	result, err := f.Get()
+
+	// Then
+	assert.Nil(t, err)
+	assert.Equal(t, expectedVal, *result)
+}
+
+func Test_Future_RunWithParam_Returns_Error(t *testing.T) {
+	// Given
+	fn := func(myParam int) (*string, error) {
+		return nil, errors.New("an error")
+	}
+	// When
+	f := future.RunWithParam[*string, int](fn, 10)
+	result, err := f.Get()
+
+	// Then
+	assert.NotNil(t, err)
+	assert.Nil(t, result)
+}
+
+func Test_Future_RunWithParam_When_Pass_Loop_Variable(t *testing.T) {
+	// Given
+	futures := make([]*future.Future[int], 0)
+	numbers := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+	for _, value := range numbers {
+		f := future.RunWithParam(func(v int) (int, error) {
+			println(v)
+			return v, nil
+		}, value)
+		futures = append(futures, f)
+	}
+
+	// When
+	result, err := future.GetAll(futures)
+
+	// Then
+	assert.Nil(t, err)
+	assert.Equal(t, numbers, result)
+}
+
 func Test_Future_Get_All(t *testing.T) {
 	// Given
 	futures := createNFuture(100, false)
