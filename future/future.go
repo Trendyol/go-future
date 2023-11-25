@@ -15,8 +15,8 @@ func Run[T any](f func() (T, error)) *Future[T] {
 	future := &Future[T]{}
 	future.wg.Add(1)
 	go func() {
+		defer future.wg.Done()
 		future.Result, future.Err = f()
-		future.wg.Done()
 		future.IsDone = true
 	}()
 	return future
@@ -26,8 +26,8 @@ func RunWithParam[T any, P any](f func(P) (T, error), param P) *Future[T] {
 	future := &Future[T]{}
 	future.wg.Add(1)
 	go func(p P) {
+		defer future.wg.Done()
 		future.Result, future.Err = f(p)
-		future.wg.Done()
 		future.IsDone = true
 	}(param)
 	return future
