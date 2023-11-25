@@ -2,6 +2,7 @@ package future_test
 
 import (
 	"errors"
+	"fmt"
 	"github.com/Trendyol/go-future/future"
 	"github.com/Trendyol/go-future/test/assert"
 	"math/rand"
@@ -94,6 +95,24 @@ func Test_Future_RunWithParam_Returns_Value(t *testing.T) {
 	assert.Equal(t, "future-test-withParam", result)
 }
 
+func Test_Future_RunWithParam_With_FutureParams(t *testing.T) {
+	// Given
+	fn := func(myParam future.Params) (string, error) {
+		strParam, _ := future.GetParam[string](myParam, 0)
+		boolParam, _ := future.GetParam[bool](myParam, 1)
+		intParam, _ := future.GetParam[int](myParam, 2)
+		return fmt.Sprintf("future-test-%s-%t-%d", strParam, boolParam, intParam), nil
+	}
+
+	// When
+	f := future.RunWithParam(fn, future.Params{"future-param", true, 10})
+	result, err := f.Get()
+
+	// Then
+	assert.Nil(t, err)
+	assert.Equal(t, "future-test-future-param-true-10", result)
+}
+
 func Test_Future_RunWithParam_Returns_Pointer_Ref(t *testing.T) {
 	// Given
 	expectedVal := "param-is-null"
@@ -137,6 +156,28 @@ func Test_Future_RunWithParam_When_Pass_Loop_Variable(t *testing.T) {
 			println(v)
 			return v, nil
 		}, value)
+		futures = append(futures, f)
+	}
+
+	// When
+	result, err := future.GetAll(futures)
+
+	// Then
+	assert.Nil(t, err)
+	assert.Equal(t, numbers, result)
+}
+
+func Test_Future_FutureParams_When_Pass_Loop_Variable(t *testing.T) {
+	// Given
+	futures := make([]*future.Future[int], 0)
+	numbers := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+	for _, value := range numbers {
+		f := future.RunWithParam(func(v future.Params) (int, error) {
+			index, _ := future.GetParam[int](v, 1)
+			println(index)
+			return index, nil
+		}, future.Params{"str-param", value})
 		futures = append(futures, f)
 	}
 

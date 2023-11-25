@@ -4,7 +4,7 @@ This library helps to use goroutines and wait for result.
 ## Usage example
 
 ### Single Future
-#### Simple usage
+#### Anonymous Function usage
 ```go
 fut := future.Run(func() (string, error) {
 	time.Sleep(1000 * time.Millisecond)
@@ -24,16 +24,42 @@ if err != nil {
 }
 ```
 
-
-#### PassFunction
+#### Function Ref
 ```go
-func ExampleFunc() (string, error) {
+fut := future.Run(execute)
+result := fut.GetResult()
+
+func execute() (string, error) {
     time.Sleep(1000 * time.Millisecond)
     return "name", nil
 }
 
-fut := future.Run(ExampleFunc)
+```
+
+#### With Single Param
+```go
+fut := future.RunWithParam(execute, "str-param")
 result := fut.GetResult()
+
+func execute(strParam string) (string, error) {
+    time.Sleep(1000 * time.Millisecond)
+    return strParam, nil
+}
+
+```
+
+#### With Multi Param
+```go
+fut := future.RunWithParam(execute, future.Params{"str-param", true, 10})
+result := fut.GetResult()
+
+func execute(params future.Params) (string, error) {
+    time.Sleep(1000 * time.Millisecond)
+    param1, _ := future.GetParam[string](params, 0)
+    param2, _ := future.GetParam[bool](params, 1)
+    param3, _ := future.GetParam[int](params, 2)
+    return fmt.Sprintf("%s_%t_%d", param1, param2, param3), nil
+}
 ```
 ---
 ### Multiple Future
