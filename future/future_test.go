@@ -21,9 +21,9 @@ func createNFuture(futureCount int, hasError bool) []*future.Future[string] {
 		time.Sleep(time.Duration(waitMillis) * time.Millisecond)
 		return "", errors.New("error occurred")
 	}
-	futures := make([]*future.Future[string], 0)
+	futures := make([]*future.Future[string], 0, futureCount)
 	for i := 0; i < futureCount; i++ {
-		if hasError && i == futureCount/2 {
+		if hasError && i%2 == 0 {
 			futures = append(futures, future.Run[string](fnWithError))
 		} else {
 			futures = append(futures, future.Run[string](fn))
@@ -232,6 +232,23 @@ func Test_Future_WaitAllSilently(t *testing.T) {
 	assert.Equal(t, len(futures), doneCount)
 }
 
+func Test_Future_WaitAllContinueOnError(t *testing.T) {
+	// Given
+	futures := createNFuture(100, true)
+	// When
+	errs := future.WaitAllContinueOnError(futures)
+
+	// Then
+	doneCount := 0
+	for i := range futures {
+		if futures[i].IsDone {
+			doneCount++
+		}
+	}
+	assert.Equal(t, 50, len(errs))
+	assert.Equal(t, len(futures), doneCount)
+}
+
 func Test_Future_WaitFor(t *testing.T) {
 	// Given
 	f1 := future.Run[any](func() (any, error) {
@@ -250,5 +267,28 @@ func Test_Future_WaitFor(t *testing.T) {
 	// Then
 	assert.Nil(t, err)
 	assert.Equal(t, "expectedVal", result1)
+	assert.Equal(t, 1, result2)
+}
+
+func Test_Future_WaitForContinueOnError(t *testing.T) {
+	// Given
+	f1 := future.Run[any](func() (any, error) {
+		return "expectedVal", errors.New("any err f1")
+	})
+
+	f2 := future.Run[any](func() (any, error) {
+		return 1, nil
+	})
+
+	f3 := future.Run[any](func() (any, error) {
+		return 1, errors.New("any err f3")
+	})
+
+	// When
+	errs := future.WaitForContinueOnError(f1, f2, f3)
+	result2 := future.GetResult[int](f2)
+
+	// Then
+	assert.Equal(t, 2, len(errs))
 	assert.Equal(t, 1, result2)
 }
