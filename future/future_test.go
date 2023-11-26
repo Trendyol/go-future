@@ -97,10 +97,10 @@ func Test_Future_RunWithParam_Returns_Value(t *testing.T) {
 
 func Test_Future_RunWithParam_With_FutureParams(t *testing.T) {
 	// Given
-	fn := func(myParam future.Params) (string, error) {
-		strParam, _ := future.GetParam[string](myParam, 0)
-		boolParam, _ := future.GetParam[bool](myParam, 1)
-		intParam, _ := future.GetParam[int](myParam, 2)
+	fn := func(params future.Params) (string, error) {
+		strParam := params.GetStringParam(0)
+		boolParam := params.GetBoolParam(1)
+		intParam := params.GetIntParam(2)
 		return fmt.Sprintf("future-test-%s-%t-%d", strParam, boolParam, intParam), nil
 	}
 
@@ -174,7 +174,7 @@ func Test_Future_FutureParams_When_Pass_Loop_Variable(t *testing.T) {
 
 	for _, value := range numbers {
 		f := future.RunWithParam(func(v future.Params) (int, error) {
-			index, _ := future.GetParam[int](v, 1)
+			index := v.GetIntParam(1)
 			println(index)
 			return index, nil
 		}, future.Params{"str-param", value})

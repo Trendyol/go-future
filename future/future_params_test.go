@@ -83,3 +83,67 @@ func TestGetParam_ShouldReturnError_When_InvalidTypeConversion(t *testing.T) {
 	assert.Equal(t, ErrParamTypeConversionFailed, err)
 	assert.Equal(t, value, 0)
 }
+
+func TestParams_GetParam(t *testing.T) {
+	params := Params{10, int32(20), int64(30), uint(40), uint8(50), uint32(60), uint64(70), float32(80.5), float64(90.5), "hello", true, []byte("world")}
+
+	t.Run("GetIntParam", func(t *testing.T) {
+		actual := params.GetIntParam(0)
+		assert.Equal(t, 10, actual)
+	})
+
+	t.Run("GetInt32Param", func(t *testing.T) {
+		actual := params.GetInt32Param(1)
+		assert.Equal(t, int32(20), actual)
+	})
+
+	t.Run("GetInt64Param", func(t *testing.T) {
+		actual := params.GetInt64Param(2)
+		assert.Equal(t, int64(30), actual)
+	})
+
+	t.Run("GetUIntParam", func(t *testing.T) {
+		actual := params.GetUIntParam(3)
+		assert.Equal(t, uint(40), actual)
+	})
+
+	t.Run("GetUInt8Param", func(t *testing.T) {
+		actual := params.GetUInt8Param(4)
+		assert.Equal(t, uint8(50), actual)
+	})
+
+	t.Run("GetUInt32Param", func(t *testing.T) {
+		actual := params.GetUInt32Param(5)
+		assert.Equal(t, uint32(60), actual)
+	})
+
+	t.Run("GetUInt64Param", func(t *testing.T) {
+		actual := params.GetUInt64Param(6)
+		assert.Equal(t, uint64(70), actual)
+	})
+
+	t.Run("GetFloat32Param", func(t *testing.T) {
+		actual := params.GetFloat32Param(7)
+		assert.Equal(t, float32(80.5), actual)
+	})
+
+	t.Run("GetFloat64Param", func(t *testing.T) {
+		actual := params.GetFloat64Param(8)
+		assert.Equal(t, float64(90.5), actual)
+	})
+
+	t.Run("GetStringParam", func(t *testing.T) {
+		actual := params.GetStringParam(9)
+		assert.Equal(t, "hello", actual)
+	})
+
+	t.Run("GetBoolParam", func(t *testing.T) {
+		actual := params.GetBoolParam(10)
+		assert.Equal(t, true, actual)
+	})
+
+	t.Run("GetBytesParam", func(t *testing.T) {
+		actual := params.GetBytesParam(11)
+		assert.Equal(t, []byte("world"), actual)
+	})
+}
