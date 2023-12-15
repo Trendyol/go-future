@@ -4,12 +4,12 @@ import (
 	"sync"
 )
 
-// WaitAllSilently function waits for the completion of specified Futures without collecting or
+// WaitAllSilently function waits for the completion of specified futures without collecting or
 // returning any error information. It performs a silent wait using a sync.WaitGroup to wait for
-// all Futures to complete.
+// all futures to complete.
 //
 // Parameters:
-//   - futures: List of Futures to wait for.
+//   - futures: List of futures to wait for.
 func WaitAllSilently[T any](futures []*Future[T]) {
 	var wg sync.WaitGroup
 	wg.Add(len(futures))
@@ -22,11 +22,11 @@ func WaitAllSilently[T any](futures []*Future[T]) {
 	wg.Wait()
 }
 
-// WaitAllContinueOnError function waits for the completion of specified Futures and continues
+// WaitAllContinueOnError function waits for the completion of specified futures and continues
 // even if an error occurs during the process. It returns a list of errors that occurred.
 //
 // Parameters:
-//   - futures: List of Futures to wait for.
+//   - futures: List of futures to wait for.
 //
 // Return:
 //   - A list of errors that occurred during the execution. The list may be empty if there are no errors.
@@ -34,11 +34,11 @@ func WaitAllContinueOnError[T any](futures []*Future[T]) []error {
 	return waitAll(futures, false)
 }
 
-// WaitAll function waits for the completion of specified Futures. If any error occurs during
+// WaitAll function waits for the completion of specified futures. If any error occurs during
 // the process, it stops waiting and returns the first error encountered.
 //
 // Parameters:
-//   - futures: List of Futures to wait for.
+//   - futures: List of futures to wait for.
 //
 // Return:
 //   - If at least one error occurs, it returns the first error encountered.
@@ -51,12 +51,12 @@ func WaitAll[T any](futures []*Future[T]) error {
 	return nil
 }
 
-// waitAll function waits for the completion of specified Futures.
+// waitAll function waits for the completion of specified futures.
 //
 // Parameters:
-//   - futures: List of Futures to wait for.
+//   - futures: List of futures to wait for.
 //   - abortOnError: If true, it stops waiting and returns the first error if any occurs.
-//     If false, it collects errors as they occur and waits for other Futures to complete.
+//     If false, it collects errors as they occur and waits for other futures to complete.
 //
 // Return:
 //
@@ -84,15 +84,15 @@ func waitAll[T any](futures []*Future[T], abortOnError bool) []error {
 	return errs
 }
 
-// GetAll function waits for the completion of specified Futures using the WaitAll function.
+// GetAll function waits for the completion of specified futures using the WaitAll function.
 // If any error occurs during the waiting process, it returns an error immediately.
-// Otherwise, it extracts the results from completed Futures and returns them as a slice.
+// Otherwise, it extracts the results from completed futures and returns them as a slice.
 //
 // Parameters:
-//   - futures: List of Futures to wait for.
+//   - futures: List of futures to wait for.
 //
 // Return:
-//   - A slice containing the results of completed Futures.
+//   - A slice containing the results of completed futures.
 //   - If any error occurs during the waiting process, it returns an error.
 func GetAll[T any](futures []*Future[T]) ([]T, error) {
 	err := WaitAll(futures)
@@ -109,10 +109,10 @@ func GetAll[T any](futures []*Future[T]) ([]T, error) {
 }
 
 // WaitFor function is a convenience wrapper around the WaitAll function.
-// It waits for the completion of specified Futures and returns an error if any of the Futures encounters an error.
+// It waits for the completion of specified futures and returns an error if any of the futures encounters an error.
 //
 // Parameters:
-//   - futures: Variadic parameter representing a list of Futures to wait for.
+//   - futures: Variadic parameter representing a list of futures to wait for.
 //
 // Return:
 //   - If any error occurs during the waiting process, it returns an error.
@@ -121,11 +121,11 @@ func WaitFor(futures ...*Future[any]) error {
 }
 
 // WaitForContinueOnError function is a convenience wrapper around the WaitAllContinueOnError function.
-// It waits for the completion of specified Futures and continues even if an error occurs during the process.
+// It waits for the completion of specified futures and continues even if an error occurs during the process.
 // It returns a list of errors that occurred during the execution.
 //
 // Parameters:
-//   - futures: Variadic parameter representing a list of Futures to wait for.
+//   - futures: Variadic parameter representing a list of futures to wait for.
 //
 // Return:
 //   - A list of errors that occurred during the execution. The list may be empty if there are no errors.
