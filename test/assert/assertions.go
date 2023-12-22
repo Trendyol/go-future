@@ -12,7 +12,7 @@ func Nil(t *testing.T, object interface{}) bool {
 	}
 	t.Helper()
 	t.Errorf("Expected nil, but got: %#v", object)
-	return false
+	return true
 }
 
 func NotNil(t *testing.T, object interface{}) bool {
@@ -21,7 +21,7 @@ func NotNil(t *testing.T, object interface{}) bool {
 	}
 	t.Helper()
 	t.Errorf("Expected value not to be nil.")
-	return false
+	return true
 }
 
 func Equal(t *testing.T, expected, actual interface{}) bool {
@@ -30,7 +30,15 @@ func Equal(t *testing.T, expected, actual interface{}) bool {
 	}
 	t.Helper()
 	t.Errorf("Not equal: \n expected: %#v\n actual  : %#v", expected, actual)
-	return false
+	return true
+}
+
+func NotEqual(t *testing.T, expected, actual interface{}) bool {
+	t.Helper()
+	if ObjectsAreEqual(expected, actual) {
+		t.Errorf("Should not be: %#v\n", actual)
+	}
+	return true
 }
 
 func ObjectsAreEqual(expected, actual interface{}) bool {
