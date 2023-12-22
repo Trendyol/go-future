@@ -67,15 +67,15 @@ func execute(params future.Params) (string, error) {
 #### Future Group
 ```go 
 ids := []string{"A", "B", "C", "D", "E"}
-futGroup := future.Group[string]{}
+fg := future.Group[string]{}
 for i := range ids {
     id := ids[i]
-    futGroup.Go(func() (string, error) {
+    fg.Go(func() (string, error) {
         return APICall(id)
     })
 }
 log.Println("Waiting for future result...")
-results, err := futGroup.Get()
+results, err := fg.Get()
 ```
 
 #### Parallel request example
