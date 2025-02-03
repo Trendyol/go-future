@@ -1,3 +1,5 @@
+
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Trendyol/go-future/badge)](https://scorecard.dev/viewer/?uri=github.com/Trendyol/go-future)
 # go-future
 This library helps to use goroutines and wait for result.
 
